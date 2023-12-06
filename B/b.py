@@ -84,34 +84,28 @@ def encrypt2(key) -> str:
     return str(c)
 
 # ? my own code
-lock = threading.Lock()
-
 def handle_client(client_socket):
-    lock.acquire()
-    try:
-        for i in range(2):
-            message = ''
-            data = client_socket.recv(1024).decode('utf-8')
+    for i in range(2):
+        message = ''
+        data = client_socket.recv(1024).decode('utf-8')
 
-            if i == 0:
-                decrypt1(data)
-                message = encrypt1()
+        if i == 0:
+            decrypt1(data)
+            message = encrypt1()
+            client_socket.send(message.encode('utf-8'))
+        elif i == 1:
+            decrypt2(data)
+            key = generate_session_key()
+            print('key = ', key)
+            for j in range(0, 16, 2):
+                subkey = key[j:j+2]
+                message = encrypt2(subkey)
+                print(j, j+1)
+                print(subkey)
+                print(message)
+                time.sleep(1)
                 client_socket.send(message.encode('utf-8'))
-            elif i == 1:
-                decrypt2(data)
-                key = generate_session_key()
-                print('key = ', key)
-                for j in range(0, 16, 2):
-                    subkey = key[j:j+2]
-                    message = encrypt2(subkey)
-                    print(j, j+1)
-                    print(subkey)
-                    print(message)
-                    time.sleep(1)
-                    client_socket.send(message.encode('utf-8'))
-        client_socket.close()
-    finally:
-        lock.release()
+    client_socket.close()
 
 # ? chatGPT code
 '''
