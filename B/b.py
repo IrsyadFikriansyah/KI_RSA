@@ -4,6 +4,8 @@ import random
 import time
 
 # ? key for DES
+
+
 def generate_session_key() -> str:
     arr = '123456789abcdf'
     key = ''
@@ -21,7 +23,7 @@ def decrypt1(c) -> None:
     m = pow(int(c), d, n)
     print(f'N1\t: {str(m)[0]}')
     print(f'ID-A\t: {str(m)[1:]}')
-    
+
     with open(".key/n-a.txt", "w") as f:
         print(str(m)[0], file=f)
 
@@ -35,11 +37,9 @@ def encrypt1() -> str:
         n1 = int(f.read())
         print(f'N1\t: {n1}')
 
-
     with open(".key/n-b.txt", "r") as f:
         n2 = f.read()
         print(f'N2\t: {n2}')
-
 
     with open(".key/publicKey-a.txt", "r") as f:
         e = f.read().split('\n')
@@ -83,9 +83,10 @@ def encrypt2(key) -> str:
     print()
     return str(c)
 
+
 def store_symmetric_key(key) -> None:
     with open(".key/symmetric_key.txt", "w") as f:
-        print(key, file = f)
+        print(key, file=f)
 
 
 def handle_client(client_socket):
@@ -122,6 +123,7 @@ def handle_client(client_socket):
 
     client_socket.close()
 
+
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -137,6 +139,7 @@ def start_server():
     print(f"Accepted connection from {addr}")
     client_handler = threading.Thread(target=handle_client, args=(client,))
     client_handler.start()
+
 
 if __name__ == "__main__":
     start_server()

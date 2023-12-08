@@ -120,17 +120,18 @@ int main() {
     myKey.generateKey();
 
     // Retrieve and display the public key
-    FILE *fp1 = fopen("../B/.key/publicKey-a.txt","w");
+    FILE *fp1 = fopen("../B/.key/publicKey-a.txt", "w");
     pair<int, int> publicKey = myKey.getPublicKey();
-    cout << "Public Key (e, n): (" << publicKey.first << ", " << publicKey.second << ")\n";
-    fprintf(fp1,"%d\n%d", publicKey.first, publicKey.second);
-
+    cout << "Public Key (e, n): (" << publicKey.first << ", "
+         << publicKey.second << ")\n";
+    fprintf(fp1, "%d\n%d", publicKey.first, publicKey.second);
 
     // Retrieve and display the private key
-    FILE *fp2 = fopen(".key/privateKey-a.txt","w");
+    FILE *fp2 = fopen(".key/privateKey-a.txt", "w");
     pair<int, int> privateKey = myKey.getPrivateKey();
-    cout << "Private Key (d, n): (" << privateKey.first << ", " << privateKey.second << ")\n";
-    fprintf(fp2,"%d\n%d", privateKey.first, privateKey.second);
+    cout << "Private Key (d, n): (" << privateKey.first << ", "
+         << privateKey.second << ")\n";
+    fprintf(fp2, "%d\n%d", privateKey.first, privateKey.second);
 
     fclose(fp1);
     fclose(fp2);
