@@ -4,10 +4,8 @@ import random
 import time
 
 # ? key for DES
-
-
 def generate_session_key() -> str:
-    arr = '123456789ABCDEFF'
+    arr = '123456789abcdf'
     key = ''
     for _ in range(16):
         key += arr[random.randint(0, len(arr) - 1)]
@@ -83,7 +81,11 @@ def encrypt2(key) -> str:
     print(f'raw: {m}, enc: {c}')
     return str(c)
 
-# ? my own code
+def store_symmetric_key(key) -> None:
+    with open(".key/symmetric_key.txt", "w") as f:
+        print(key, file = f)
+
+
 def handle_client(client_socket):
     for i in range(2):
         message = ''
@@ -96,35 +98,18 @@ def handle_client(client_socket):
         elif i == 1:
             decrypt2(data)
             key = generate_session_key()
+            store_symmetric_key(key)
             print('key = ', key)
+            # ? because it can only encrypt m < n, needs to do repeatedly
             for j in range(0, 16, 2):
                 subkey = key[j:j+2]
                 message = encrypt2(subkey)
                 print(j, j+1)
                 print(subkey)
                 print(message)
-                time.sleep(1)
+                time.sleep(0.5)
                 client_socket.send(message.encode('utf-8'))
     client_socket.close()
-
-# ? chatGPT code
-'''
-def handle_client(client_socket):
-    while True:
-        data = client_socket.recv(1024).decode('utf-8')
-        if not data:
-            break
-
-        if len(data) > 1:
-            if data[0] == '1':
-                data = decrypt(data[1::])
-
-        print(f"Received message: {data}")
-        response = input("Enter your response: ")
-        client_socket.send(response.encode('utf-8'))
-    client_socket.close()
-'''
-
 
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -142,16 +127,5 @@ def start_server():
     client_handler = threading.Thread(target=handle_client, args=(client,))
     client_handler.start()
 
-    # ? chatGPT code
-'''    
-    while True:
-        client, addr = server.accept()
-        print(f"Accepted connection from {addr}")
-        client_handler = threading.Thread(target=handle_client, args=(client,))
-        client_handler.start()
-'''
 if __name__ == "__main__":
     start_server()
-    # key = generate_sesion_key()
-    # print(key)
-    # print(key[0:2])

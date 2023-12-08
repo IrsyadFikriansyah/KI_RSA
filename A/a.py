@@ -85,7 +85,6 @@ def start_client():
     server_port = 5555
     client.connect((server_ip, server_port))
 
-    # ? my own code
     response = ''
     for i in range(0, 2):
         message = ''
@@ -109,22 +108,5 @@ def start_client():
         print(f"Received response: {response}")
     client.close()
         
-    # ? chatGPT code
-    '''
-    while True:
-        message = input("Enter your message: ")
-        if message == '1':
-            message += encrypt()
-            print(message)
-        client.send(message.encode('utf-8'))
-        if message.lower() == 'exit':
-            break
-        response = client.recv(1024).decode('utf-8')
-        print(f"Received response: {response}")
-    client.close()'''
-
-
 if __name__ == "__main__":
     start_client()
-    # get_mne()
-    pass
