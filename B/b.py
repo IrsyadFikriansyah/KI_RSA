@@ -13,14 +13,15 @@ def generate_session_key() -> str:
 
 
 def decrypt1(c) -> None:
-    print('\n\ndecrypt1')
-
     with open(".key/privateKey-b.txt", "r") as f:
         d = f.read().split('\n')
         n = int(d[1])
         d = int(d[0])
 
     m = pow(int(c), d, n)
+    print(f'N1\t: {str(m)[0]}')
+    print(f'ID-A\t: {str(m)[1:]}')
+    
     with open(".key/n-a.txt", "w") as f:
         print(str(m)[0], file=f)
 
@@ -30,34 +31,35 @@ def decrypt1(c) -> None:
 
 
 def encrypt1() -> str:
-    print('\n\nencrypt1')
-
     with open(".key/n-a.txt", "r") as f:
         n1 = int(f.read())
+        print(f'N1\t: {n1}')
+
 
     with open(".key/n-b.txt", "r") as f:
-        id = f.read()
+        n2 = f.read()
+        print(f'N2\t: {n2}')
+
 
     with open(".key/publicKey-a.txt", "r") as f:
         e = f.read().split('\n')
         n = int(e[1])
         e = int(e[0])
 
-    m = n1 * 10 ** len(id) + int(id)
+    m = n1 * 10 ** len(n2) + int(n2)
     c = pow(m, e, n)
     print(f'raw: {m}, enc: {c}')
     return str(c)
 
 
 def decrypt2(c) -> None:
-    print('\n\ndecrypt2')
-
     with open(".key/privateKey-b.txt", "r") as f:
         d = f.read().split('\n')
         n = int(d[1])
         d = int(d[0])
 
     m = pow(int(c), d, n)
+    print(f'N2\t: {m}')
 
     # ? check if N2 is the same
     with open(".key/n-b.txt", "r") as f:
@@ -65,12 +67,10 @@ def decrypt2(c) -> None:
         if n1 != str(m)[0]:
             print('N2 is not the same! Aborting')
             exit()
-    print(f'raw: {m}, enc: {c}')
+    print(f'raw: {m}, dec: {c}')
 
 
 def encrypt2(key) -> str:
-    print('\n\nencrypt2')
-
     m = int(key, 16)
     with open(".key/publicKey-a.txt", "r") as f:
         e = f.read().split('\n')
@@ -78,7 +78,9 @@ def encrypt2(key) -> str:
         e = int(e[0])
 
     c = pow(m, e, n)
-    print(f'raw: {m}, enc: {c}')
+    print(f'sending\t\t: {m}')
+    print(f'encrypted\t: {c}')
+    print()
     return str(c)
 
 def store_symmetric_key(key) -> None:
@@ -92,23 +94,32 @@ def handle_client(client_socket):
         data = client_socket.recv(1024).decode('utf-8')
 
         if i == 0:
+            print('(1) Reciving N1 || ID-A…')
             decrypt1(data)
+            print()
+
+            print('(2) Sending N1 || N2…')
             message = encrypt1()
             client_socket.send(message.encode('utf-8'))
+            print()
+
         elif i == 1:
+            print('(3) Reciving N2…')
             decrypt2(data)
+            print()
+
             key = generate_session_key()
             store_symmetric_key(key)
-            print('key = ', key)
+            print('(4) Sending Session Key…')
+            print(f'Session Key\t: {key}')
+            print()
             # ? because it can only encrypt m < n, needs to do repeatedly
             for j in range(0, 16, 2):
                 subkey = key[j:j+2]
                 message = encrypt2(subkey)
-                print(j, j+1)
-                print(subkey)
-                print(message)
                 time.sleep(0.5)
                 client_socket.send(message.encode('utf-8'))
+
     client_socket.close()
 
 def start_server():
