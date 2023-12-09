@@ -108,5 +108,16 @@ untuk mempermudah visualisasu saya juga memisahkan setiap step enkripsi dan dekr
 
 setelah berhasil didistribusikan, secret key akan disimpan di `.key/symmetric_key.txt` pada masing-masing folder
 
+## Hasil
+
+berikut adalah screenshots hasil output dari program yang saya buat
+
+### Generating Key
+
+![result_generate](images/result_generate.jpg)
+
+### Distributing
+
+![result_distribute](images/result_distribute.jpg)
 
 

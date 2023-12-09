@@ -8,7 +8,7 @@ def encrypt1() -> str:
 
     with open(".key/id-a.txt", "r") as f:
         id = f.read()
-        print(f'ID-A\t: {n1}')
+        print(f'ID-A\t: {id}')
 
     with open(".key/publicKey-b.txt", "r") as f:
         e = f.read().split('\n')
