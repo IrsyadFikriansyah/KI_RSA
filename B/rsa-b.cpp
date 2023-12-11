@@ -93,7 +93,6 @@ class Key {
         int n = p * q;
         int phi = (p - 1) * (q - 1);
 
-        vector<bool> selected(prime.size(), false);
         int e = randNum(phi);
         while (1) {
             if (gcd(e, phi) == 1)
